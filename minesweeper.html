@@ -2,10 +2,15 @@
   <head>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <link rel='stylesheet' type="text/css" href="stylesheet.css" />
+    <title>Minesweeper</title>
   </head>
   <body>
-    <div id="game-board"></div>
+    <h1>Minesweeper</h1>
+    <input type="radio" id="reveal" name="action" value="reveal" checked>Reveal</input>
+    <input type="radio" id="flag" name="action" value="flag">Flag</input>
     <button>New Game</button>
+    <div id="game-board"></div>
+    
     <script src="game.js"></script>
     <script src="game-ui.js"></script>
 

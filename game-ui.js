@@ -2,7 +2,7 @@
   var Minesweeper = root.Minesweeper = (root.Minesweeper || {});
 
   var BOARDSIZE = Minesweeper.BOARDSIZE = 20;
-  var MINES = Minesweeper.MINES = 50;
+  var MINES = Minesweeper.MINES = 20;
 
   var GameUI = Minesweeper.GameUI = function (rootEl) {
     this.board = new Minesweeper.Board({
@@ -69,8 +69,11 @@
             currentTile.addClass('revealed')
           }
 
+        } else if (tile.isFlagged) {
+          currentTile.addClass('flagged').html("F");
+
         } else {
-          currentTile.addClass('unrevealed')
+          currentTile.addClass('unrevealed');
         }
 
         currentTile.data('row', tile.pos[0]).data('col', tile.pos[1]);
@@ -84,20 +87,24 @@
 
     $('button').attr('disabled', true);
 
-    $(this.rootEl).on("click", function (event) {
+    $(this.rootEl).on("mousedown", function (event) {
       event.preventDefault();
+
 
       var row = $(event.target).data('row');
       var col = $(event.target).data('col');
       var tile = that.board.getPos(row, col);
 
-      tile.reveal();
+      $('#flag').is(':checked') ? tile.flag() : tile.reveal();
+      
 
       setTimeout(function () {
         that.render();
-        if (that.board.isOver()) {
+
+        var gameOverMsg = that.board.isOver();
+        if (gameOverMsg) {
           $(that.rootEl).off();
-          alert('Game over.');
+          alert('Game over. You ' + gameOverMsg + '!');
           $('button').removeAttr('disabled');
         }
       }, 50)

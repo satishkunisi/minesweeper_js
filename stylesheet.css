@@ -23,6 +23,10 @@
   background-color: #F2F2F2;
 }
 
+.flagged {
+  background-color: #5FB404;
+}
+
 .one {
   color: #08088A;
 }

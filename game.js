@@ -12,6 +12,10 @@
     this.adjacentMines = 0;
   };
 
+  Tile.prototype.flag = function () {
+    this.isFlagged = true;
+  }
+
   Tile.prototype.reveal = function () {
     var that = this;
 
@@ -186,7 +190,11 @@
   };
 
   Board.prototype.isOver = function () {
-    return (this.hasMineExploded() || this.allMinesFlagged());
+    if (this.hasMineExploded()) {
+      return "lost";
+    } else if (this.allMinesFlagged()) {
+      return "won";
+    } 
   }
 
 
