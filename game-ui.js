@@ -82,6 +82,16 @@
     })
   };
 
+  GameUI.prototype.handleAction = function (tile) {
+      var action = $('#flag').is(':checked') ? "flag" : "reveal";
+
+      if (action == "reveal" && !tile.isFlagged && !tile.isRevealed) {
+        tile.reveal();
+      } else if (action == "flag" && !tile.isRevealed) {
+        tile.toggleFlag();
+      }
+  };
+
   GameUI.prototype.setBoardListener = function () {
     var that = this;
 
@@ -94,9 +104,8 @@
       var row = $(event.target).data('row');
       var col = $(event.target).data('col');
       var tile = that.board.getPos(row, col);
-
-      $('#flag').is(':checked') ? tile.flag() : tile.reveal();
       
+      that.handleAction(tile);
 
       setTimeout(function () {
         that.render();
@@ -104,6 +113,10 @@
         var gameOverMsg = that.board.isOver();
         if (gameOverMsg) {
           $(that.rootEl).off();
+
+          that.board.revealAllTiles();
+          that.render();
+
           alert('Game over. You ' + gameOverMsg + '!');
           $('button').removeAttr('disabled');
         }

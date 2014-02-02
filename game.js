@@ -12,8 +12,8 @@
     this.adjacentMines = 0;
   };
 
-  Tile.prototype.flag = function () {
-    this.isFlagged = true;
+  Tile.prototype.toggleFlag = function () {
+    this.isFlagged = !this.isFlagged;
   }
 
   Tile.prototype.reveal = function () {
@@ -125,7 +125,7 @@
   };
 
   Board.prototype.inBounds = function (row, col) {
-    return (row > 0 && row < this.boardSize) && (col > 0 && col < this.boardSize);
+    return (row >= 0 && row < this.boardSize) && (col >= 0 && col < this.boardSize);
   }
 
   Board.prototype.getRandCoords = function () {
@@ -195,6 +195,14 @@
     } else if (this.allMinesFlagged()) {
       return "won";
     } 
+  };
+
+  Board.prototype.revealAllTiles = function () {
+    this.grid.forEach(function (row) {
+      row.forEach(function (tile) {
+        (!tile.isRevealed) && (tile.isRevealed = true);
+      });
+    });
   }
 
 
