@@ -1,0 +1,56 @@
+#game-board {
+  width: 400px;
+  font-family: Helvetica, Arial;
+}
+
+#game-board div {
+  width: 18px;
+  height: 18px;
+  float: left;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.mine {
+  background-color: #FF0000;
+}
+
+.unrevealed {
+  background-color: #848484;
+}
+
+.revealed {
+  background-color: #F2F2F2;
+}
+
+.one {
+  color: #08088A;
+}
+
+.two {
+  color: #088A4B;
+}
+
+.three {
+  color: #5FB404;
+}
+
+.four {
+  color: #D7DF01;
+}
+
+.five {
+  color: #FF00BF;
+}
+
+.six {
+  color: #FF0040;
+}
+
+.seven {
+  color: #FF8000;
+}
+
+.eight {
+  color: #FF0000;
+}
