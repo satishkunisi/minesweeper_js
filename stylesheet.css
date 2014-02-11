@@ -1,6 +1,10 @@
+body {
+  font-family: 'Russo One', sans-serif;
+}
+
 #game-board {
   width: 400px;
-  font-family: Helvetica, Arial;
+  font-family: 'Russo One', sans-serif;
 }
 
 #game-board div {

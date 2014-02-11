@@ -2,7 +2,7 @@
   var Minesweeper = root.Minesweeper = (root.Minesweeper || {});
 
   var BOARDSIZE = Minesweeper.BOARDSIZE = 20;
-  var MINES = Minesweeper.MINES = 20;
+  var MINES = Minesweeper.MINES = 50;
 
   var GameUI = Minesweeper.GameUI = function (rootEl) {
     this.board = new Minesweeper.Board({
@@ -92,6 +92,21 @@
       }
   };
 
+  GameUI.prototype.handleReveal = function () {
+    this.render();
+
+    var gameOverMsg = this.board.isOver();
+    if (gameOverMsg) {
+      $(this.rootEl).off();
+
+      this.board.revealAllTiles();
+      this.render();
+
+      alert('Game over. You ' + gameOverMsg + '!');
+      $('button').removeAttr('disabled');
+    }
+  };
+
   GameUI.prototype.setBoardListener = function () {
     var that = this;
 
@@ -108,21 +123,10 @@
       that.handleAction(tile);
 
       setTimeout(function () {
-        that.render();
-
-        var gameOverMsg = that.board.isOver();
-        if (gameOverMsg) {
-          $(that.rootEl).off();
-
-          that.board.revealAllTiles();
-          that.render();
-
-          alert('Game over. You ' + gameOverMsg + '!');
-          $('button').removeAttr('disabled');
-        }
+        that.handleReveal();
       }, 50)
     })
-  },
+  };
 
   GameUI.prototype.setButtonListener = function () {
     var that = this;
@@ -138,7 +142,7 @@
       that.render();
       that.setBoardListener(); 
     });
-  },
+  };
 
   GameUI.prototype.start = function () {
     var that = this;
