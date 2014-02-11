@@ -1,8 +1,6 @@
 (function (root) {
   var Minesweeper = root.Minesweeper = (root.Minesweeper || {});
 
-
-
   var Tile = Minesweeper.Tile = function (options) {
     this.isMine = false;
     this.isFlagged = false;
@@ -29,7 +27,6 @@
       return;
     } 
 
-    this.countAdjacentMines();
     if (this.adjacentMines > 0) {
       return;
     }
@@ -84,13 +81,11 @@
 
   Tile.prototype.render = function () {
     if (this.isMine) {
-      return "M";
+      return "☹";
     } else if (this.adjacentMines > 0) {
       return this.adjacentMines;
     }
   };
-
-
 
 
   var Board = Minesweeper.Board = function (options) {
@@ -98,6 +93,7 @@
     this.grid = this.makeGrid(options.boardSize);
     this.numMines = options.mines;
     this.seedMines();
+    this.tileCounts();
   };
 
   Board.prototype.makeGrid = function (boardSize) {
@@ -203,7 +199,14 @@
         (!tile.isRevealed) && (tile.isRevealed = true);
       });
     });
-  }
+  };
 
+  Board.prototype.tileCounts = function () {
+    this.grid.forEach(function (row) {
+      row.forEach(function (tile) {
+        tile.countAdjacentMines();
+      });
+    });
+  };
 
 })(this);

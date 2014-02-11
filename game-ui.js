@@ -11,7 +11,7 @@
     });
     
     this.rootEl = rootEl;
-  }
+  };
 
   GameUI.prototype.countAsWord = function (num) {
     var value;
@@ -46,85 +46,127 @@
     return value;
   };
 
-  GameUI.prototype.render = function () {
+  GameUI.prototype.flagTile = function (tile) {
+    tile.toggleFlag();
+
+    var row = tile.pos[0];
+    var col = tile.pos[1];
+
+    var tileDiv = $('div[data-row="' + row + '"][data-col="' + col + '"]');
+
+    if (tile.isFlagged) {
+      tileDiv.removeClass('unrevealed').addClass('flagged').html("⚑");
+    } else {
+      tileDiv.removeClass('flagged').addClass('unrevealed').html('');
+    }
+  };
+
+  GameUI.prototype.reveal = function (tile) {
+    var that = this;
+
+    var row = tile.pos[0];
+    var col = tile.pos[1];
+
+    var tileDiv = $('div[data-row="' + row + '"][data-col="' + col + '"]');
+
+    if (tile.isMine || (!tileDiv.hasClass('unrevealed')) || tile.isFlagged) {
+      return;
+    } else if (tile.adjacentMines > 0) {
+      var countAsWord = this.countAsWord(tile.adjacentMines);
+      tileDiv.removeClass('unrevealed').addClass(countAsWord).html(tile.render()) ;
+
+      return;
+    } else {
+      tileDiv.removeClass('unrevealed').addClass('revealed');
+      
+      setTimeout(function () {
+        tile.getNeighbors().forEach(function (neighbor) {
+          that.reveal(neighbor);
+        });
+      }, 100);
+     
+    }
+  };
+
+  GameUI.prototype.buildGrid = function () {
     var that = this;
 
     this.rootEl.html('');
 
     this.board.grid.forEach(function (row) {
       row.forEach(function (tile) {
-        var currentTile = $('<div>');
-
-        if (tile.isRevealed) {
-          currentTile.removeClass('unrevealed');
-          currentTile.html(tile.render());
-
-          
-          if (tile.isMine) {
-            currentTile.addClass('mine');
-          } else if (tile.adjacentMines > 0) {
-            var adjClass = that.countAsWord(tile.adjacentMines);
-            currentTile.addClass(adjClass).addClass('revealed');
-          } else {
-            currentTile.addClass('revealed')
-          }
-
-        } else if (tile.isFlagged) {
-          currentTile.addClass('flagged').html("F");
-
-        } else {
-          currentTile.addClass('unrevealed');
-        }
-
-        currentTile.data('row', tile.pos[0]).data('col', tile.pos[1]);
+        var currentTile = $('<div>').addClass('unrevealed');
+        currentTile.attr('data-row', tile.pos[0]).attr('data-col', tile.pos[1]);
         that.rootEl.append(currentTile);
       });
-    })
+    });
+  };
+
+  GameUI.prototype.revealBoard = function () {
+    var that = this;
+
+    this.rootEl.html('');
+
+    this.board.grid.forEach(function (row) {
+      row.forEach(function (tile) {
+        var currentTile = $('<div>').removeClass('unrevealed');
+        if (tile.isMine) {
+          currentTile.addClass('mine').html(tile.render());
+        } else if (tile.adjacentMines > 0) {
+          currentTile.addClass(that.countAsWord(tile.adjacentMines));
+          currentTile.html(tile.render());
+        } else {
+          currentTile.addClass('revealed');
+        }
+        that.rootEl.append(currentTile);
+      });
+    });
   };
 
   GameUI.prototype.handleAction = function (tile) {
-      var action = $('#flag').is(':checked') ? "flag" : "reveal";
+    var action = $('#flag').is(':checked') ? "flag" : "reveal";
 
-      if (action == "reveal" && !tile.isFlagged && !tile.isRevealed) {
-        tile.reveal();
-      } else if (action == "flag" && !tile.isRevealed) {
-        tile.toggleFlag();
-      }
+    if (action == "reveal" && !tile.isFlagged && !tile.isRevealed) {
+      this.handleReveal(tile);
+    } else if (action == "flag" && !tile.isRevealed) {
+      this.flagTile(tile);
+    }
+
+    this.checkGameStatus();
   };
 
-  GameUI.prototype.handleReveal = function () {
-    this.render();
+  GameUI.prototype.handleReveal = function (tile) {
+    tile.reveal();
 
+    if (tile.isMine) {
+      this.revealBoard();
+    } else {
+      this.reveal(tile);
+    }
+  };
+
+  GameUI.prototype.checkGameStatus = function () {
     var gameOverMsg = this.board.isOver();
     if (gameOverMsg) {
       $(this.rootEl).off();
 
       this.board.revealAllTiles();
-      this.render();
 
       alert('Game over. You ' + gameOverMsg + '!');
-      $('button').removeAttr('disabled');
     }
-  };
+  }
 
   GameUI.prototype.setBoardListener = function () {
     var that = this;
 
-    $('button').attr('disabled', true);
-
     $(this.rootEl).on("mousedown", function (event) {
       event.preventDefault();
-
 
       var row = $(event.target).data('row');
       var col = $(event.target).data('col');
       var tile = that.board.getPos(row, col);
       
       that.handleAction(tile);
-
-      setTimeout(function () {
-        that.handleReveal();
-      }, 50)
     })
   };
 
@@ -139,7 +181,8 @@
         mines: MINES
       });
 
-      that.render();
+      $(that.rootEl).off();
+      that.buildGrid();
       that.setBoardListener(); 
     });
   };
@@ -147,10 +190,9 @@
   GameUI.prototype.start = function () {
     var that = this;
     
-    this.render();
+    this.buildGrid();
     this.setBoardListener();
     this.setButtonListener();
-
   };
 
 })(this);
