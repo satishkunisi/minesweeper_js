@@ -6,14 +6,32 @@
     <title>Minesweeper</title>
   </head>
   <body>
-    <h1>Minesweeper</h1>
-    <input type="radio" id="reveal" name="action" value="reveal" checked>Reveal</input>
-    <input type="radio" id="flag" name="action" value="flag">Flag</input>
-    <button>New Game</button>
-    <div id="game-board"></div>
     
+
+    <h1>Minesweeper</h1>
+
+    <ul id="links">
+      <li>
+        <a href="http://github.com/satishkunisi/minesweeper_js">Check out the code on Github</a>
+      </li>
+      <li>
+        <a href="http://satishkunisi.github.io">Back to Satish Kunisi's Portfolio</a>
+      </li>
+    </ul>
+    
+    <div id="controls">
+      <input type="radio" id="reveal" name="action" value="reveal" checked>Reveal</input>
+      <input type="radio" id="flag" name="action" value="flag">Flag</input>
+      <button>New Game</button>
+    </div>
+
+    
+    <div id="game-board"></div>
+
     <script src="game.js"></script>
     <script src="game-ui.js"></script>
+
+    
 
   </body>
 </html>

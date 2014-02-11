@@ -2,9 +2,23 @@ body {
   font-family: 'Russo One', sans-serif;
 }
 
+h1 {
+  margin-bottom: 0;
+  clear: both;
+}
+
+ul#links {
+  float: left;
+  clear: both;
+}
+
+#controls {
+  clear: both;
+}
 #game-board {
   width: 400px;
   font-family: 'Russo One', sans-serif;
+  clear: both;
 }
 
 #game-board div {
